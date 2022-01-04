@@ -70,7 +70,7 @@ router.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ email: req.fields.email });
     if (user === null) {
-      res.status(400).json({ message: "Unauthorized" });
+      res.status(401).json({ message: "Unauthorized" });
     } else {
       console.log(user.hash, "Hash à comparer");
       const newHash = SHA256(req.fields.password + user.salt).toString(
@@ -92,6 +92,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
+//rechercher un user
 router.post("/consult", async (req, res) => {
   console.log("consultroad");
   try {
