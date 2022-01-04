@@ -24,6 +24,7 @@ router.post("/signup", async (req, res) => {
   const userExists = await User.findOne({ email: req.fields.email });
   try {
     if (req.fields.username) {
+      console.log("1");
       if (userExists === null) {
         const password = req.fields.password;
         const salt = uid2(16);
@@ -45,6 +46,7 @@ router.post("/signup", async (req, res) => {
         newUser.account.avatar = avatar;
 
         await newUser.save();
+        console.log("saved");
         res.json({
           _id: newUser.id,
           token: newUser.token,

@@ -54,7 +54,7 @@ router.get("/game/:id", async (req, res) => {
 
 module.exports = router;
 
-//route parents games
+//route games from the same series
 
 router.get("/games/:id/game-series", async (req, res) => {
   try {
