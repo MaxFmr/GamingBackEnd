@@ -1,9 +1,10 @@
 const User = require("../models/modelUser");
 
 const isAuthenticated = async (req, res, next) => {
-  if (req.fields.headers.Authorization) {
+  console.log(req.headers);
+  if (req.headers.authorization) {
     const user = await User.findOne({
-      token: req.fields.headers.Authorization.replace("Bearer ", ""),
+      token: req.headers.authorization.replace("Bearer ", ""),
     });
 
     if (!user) {
