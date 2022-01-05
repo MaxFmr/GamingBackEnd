@@ -4,26 +4,43 @@ const express = require("express");
 const router = express.Router();
 const formidableMiddleware = require("express-formidable");
 const Review = require("../models/modelReview");
+const User = require("../models/modelUser");
 
 router.use(formidableMiddleware());
 
+const isAuthenticated = async (req, res, next) => {
+  if (req.fields.headers.Authorization) {
+    const user = await User.findOne({
+      token: req.fields.headers.Authorization.replace("Bearer ", ""),
+    });
+
+    if (!user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    } else {
+      req.user = user;
+      // On crée une clé "user" dans req. La route dans laquelle le middleware est appelé     pourra avoir accès à req.user
+      return next();
+    }
+  } else {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+};
+
 //create
 
-router.post("/review/create", async (req, res) => {
-  console.log("create review");
-
+router.post("/review/create", isAuthenticated, async (req, res) => {
   const reviewExists = await Review.findOne({
-    userName: req.fields.userName,
+    userName: req.user.account.username,
     gameId: req.fields.gameId,
   });
 
   if (reviewExists === null) {
     try {
       const newReview = new Review({
-        userName: req.fields.userName,
+        userName: req.user.account.username,
         review: req.fields.review,
-        userAvatar: req.fields.userAvatar,
         note: req.fields.note,
+        userAvatar: req.user.account.avatar.secure_url,
         gameId: req.fields.gameId,
       });
 
@@ -40,9 +57,6 @@ router.post("/review/create", async (req, res) => {
 //read;
 
 router.get("/review/:id", async (req, res) => {
-  console.log("reviews");
-  console.log(req.params.id);
-
   try {
     const reviews = await Review.find({ gameId: req.params.id });
     reviews && res.send(reviews);

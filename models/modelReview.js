@@ -7,7 +7,7 @@ const Review = mongoose.model("Review", {
   },
   review: { type: String, required: true },
   note: {
-    type: Number,
+    type: String,
     required: true,
   },
   userAvatar: {
