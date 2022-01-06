@@ -26,12 +26,9 @@ router.post("/review/create", isAuthenticated, async (req, res) => {
         userAvatar: req.user.account.avatar.secure_url,
         gameId: req.fields.gameId,
       });
+      await user.reviews.push(newReview);
       await newReview.save();
-      await user.reviews.push({
-        gameId: req.fields.gameId,
-        note: req.fields.note,
-        review: req.fields.review,
-      });
+
       await user.save();
 
       res.json({ message: "review created" });
