@@ -13,9 +13,10 @@ const User = mongoose.model("User", {
     },
     avatar: Object,
   },
-      reviews: {
+  reviews: {
     type: Array,
   },
+  favorites: [],
   token: String,
   hash: String,
   salt: String,

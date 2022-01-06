@@ -1,29 +1,36 @@
 const Favorite = require("../models/modelFavorite");
 const express = require("express");
+const isAuthenticated = require("../middlewares/isAuthenticated");
 
 const router = express.Router();
 const formidableMiddleware = require("express-formidable");
+const User = require("../models/modelUser");
 
 router.use(formidableMiddleware());
 
 //create
 
-router.post("/favorites/create", async (req, res) => {
+router.post("/favorites/create", isAuthenticated, async (req, res) => {
   console.log("create favorite");
+  console.log(req.user);
+  console.log(req.fields.game.data.name);
   const favoriteExists = await Favorite.findOne({
+    username: req.user.account.username,
     name: req.fields.name,
-    userId: req.fields.userId,
   });
+  const user = await User.findById(req.user._id);
+
   console.log(favoriteExists);
   if (favoriteExists === null) {
     try {
       const newFavorite = new Favorite({
-        userId: req.fields.userId,
-        game_id: req.fields.game_id,
+        username: req.user.account.username,
+        game: req.fields.game,
         img: req.fields.img,
         name: req.fields.name,
       });
-
+      await user.favorites.push(newFavorite);
+      await user.save();
       await newFavorite.save();
       res.json({ message: "Favorite created" });
     } catch (error) {

@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 
 const Favorite = mongoose.model("favorite", {
-  userId: {
+  username: {
     type: String,
     required: true,
   },
-  game_id: { type: String, required: true },
+  game: { type: Object, required: true },
   img: { type: String, required: true },
   name: { type: String, required: true },
 });
