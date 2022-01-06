@@ -5,6 +5,7 @@ const router = express.Router();
 const formidableMiddleware = require("express-formidable");
 const Review = require("../models/modelReview");
 const isAuthenticated = require("../middlewares/isAuthenticated");
+const User = require("../models/modelUser");
 
 //create
 
@@ -13,6 +14,8 @@ router.post("/review/create", isAuthenticated, async (req, res) => {
     userName: req.user.account.username,
     gameId: req.fields.gameId,
   });
+  const user = await User.findById(req.user._id);
+  console.log(user);
 
   if (reviewExists === null) {
     try {
@@ -23,8 +26,14 @@ router.post("/review/create", isAuthenticated, async (req, res) => {
         userAvatar: req.user.account.avatar.secure_url,
         gameId: req.fields.gameId,
       });
-
       await newReview.save();
+      await user.reviews.push({
+        gameId: req.fields.gameId,
+        note: req.fields.note,
+        review: req.fields.review,
+      });
+      await user.save();
+
       res.json({ message: "review created" });
     } catch (error) {
       res.status(400).json({ error: error.message });
