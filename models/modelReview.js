@@ -16,8 +16,8 @@ const Review = mongoose.model("Review", {
   },
   gameId: { type: String, required: true },
 
-  likes: Number,
-  disLikes: Number,
+  likes: { type: Number, min: 0 },
+  disLikes: { type: Number, min: 0 },
 });
 
 module.exports = Review;

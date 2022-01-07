@@ -25,6 +25,8 @@ router.post("/review/create", isAuthenticated, async (req, res) => {
         note: req.fields.note,
         userAvatar: req.user.account.avatar.secure_url,
         gameId: req.fields.gameId,
+        likes: 0,
+        disLikes: 0,
       });
       await user.reviews.push(newReview);
       await newReview.save();
@@ -60,6 +62,25 @@ router.post("/review/update", async (req, res) => {
 
       review.review = req.fields.review;
 
+      await review.save();
+
+      res.json(review);
+    } else {
+      res.status(400).json({ message: "Missing parameter" });
+    }
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+// **Like**
+router.post("/review/like", async (req, res) => {
+  console.log("route : review /like");
+  console.log(req.fields._id);
+  try {
+    if (req.fields._id) {
+      const review = await Review.findById(req.fields._id);
+      review.likes += 1;
+      console.log(review.likes);
       await review.save();
 
       res.json(review);
