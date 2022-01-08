@@ -5,6 +5,10 @@ const Review = mongoose.model("Review", {
     type: String,
     required: true,
   },
+  email: {
+    type: String,
+    required: true,
+  },
   review: { type: String, required: true },
   note: {
     type: String,
@@ -16,8 +20,8 @@ const Review = mongoose.model("Review", {
   },
   gameId: { type: String, required: true },
 
-  likes: { type: Number, min: 0 },
-  disLikes: { type: Number, min: 0 },
+  likes: { type: Array },
+  dislikes: { type: Array },
 });
 
 module.exports = Review;

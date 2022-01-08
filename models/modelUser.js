@@ -6,17 +6,15 @@ const User = mongoose.model("User", {
     type: String,
   },
 
-  account: {
-    username: {
-      required: true,
-      type: String,
-    },
+  username: {
+    required: true,
+    type: String,
+
     avatar: Object,
   },
   reviews: {
     type: Array,
   },
-  favorites: [],
   token: String,
   hash: String,
   salt: String,

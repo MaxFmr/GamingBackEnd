@@ -21,39 +21,43 @@ const User = require("../models/modelUser");
 
 router.post("/signup", async (req, res) => {
   console.log("SignUp road");
-  const userExists = await User.findOne({ email: req.fields.email });
+  const userExists = await User.findOne({
+    email: req.fields.email,
+  });
+  const usernameExists = await User.findOne({
+    username: req.fields.username,
+  });
   try {
     if (req.fields.username) {
-      console.log("1");
-      if (userExists === null) {
+      if (userExists === null && usernameExists === null) {
         const password = req.fields.password;
         const salt = uid2(16);
         const hash = SHA256(password + salt).toString(encBase64);
         const token = uid2(16);
-
         const newUser = new User({
           email: req.fields.email,
-          account: {
-            username: req.fields.username,
-          },
+
+          username: req.fields.username,
+
           token: token,
           hash: hash,
           salt: salt,
         });
-
         const avatar = await cloudinary.uploader.upload(req.files.avatar.path);
 
-        newUser.account.avatar = avatar;
+        newUser.avatar = avatar;
 
         await newUser.save();
         console.log("saved");
         res.json({
           _id: newUser.id,
           token: newUser.token,
-          account: newUser.account,
+          username: newUser.username,
         });
       } else {
-        res.json({ message: "This email allready has an account" });
+        res.json({
+          errorMessage: "This email or username has allready an account",
+        });
       }
     } else {
       res.json({ message: "Missing parameter(s)" });

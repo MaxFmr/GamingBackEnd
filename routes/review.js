@@ -21,12 +21,11 @@ router.post("/review/create", isAuthenticated, async (req, res) => {
     try {
       const newReview = new Review({
         userName: req.user.account.username,
+        email: req.user.email,
         review: req.fields.review,
         note: req.fields.note,
         userAvatar: req.user.account.avatar.secure_url,
         gameId: req.fields.gameId,
-        likes: 0,
-        disLikes: 0,
       });
       await user.reviews.push(newReview);
       await newReview.save();
@@ -73,25 +72,52 @@ router.post("/review/update", async (req, res) => {
   }
 });
 // **Like**
-router.post("/review/like", async (req, res) => {
+router.post("/review/like", isAuthenticated, async (req, res) => {
   console.log("route : review /like");
-  console.log(req.fields._id);
+  const review = await Review.findById(req.fields._id);
+  console.log(review);
+
+  const likeExist = review.likes.indexOf(req.user.username);
+  console.log(req.user);
   try {
-    if (req.fields._id) {
-      const review = await Review.findById(req.fields._id);
-      review.likes += 1;
-      console.log(review.likes);
+    if (likeExist === -1) {
+      review.likes.push(req.user.username);
       await review.save();
 
       res.json(review);
     } else {
-      res.status(400).json({ message: "Missing parameter" });
+      review.likes.splice(likeExist, 1);
+      await review.save();
+
+      res.json(review);
     }
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 });
 
+// **disLike**
+router.post("/review/dislike", isAuthenticated, async (req, res) => {
+  console.log("route : review /dislike");
+  const review = await Review.findById(req.fields._id);
+
+  const dislikeExist = review.dislikes.indexOf(req.user.username);
+  try {
+    if (dislikeExist === -1) {
+      review.dislikes.push(req.user.username);
+      await review.save();
+
+      res.json(review);
+    } else {
+      review.dislikes.splice(dislikeExist, 1);
+      await review.save();
+
+      res.json(review);
+    }
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
 // **Delete**
 router.post("/review/delete", async (req, res) => {
   console.log("delete review");
