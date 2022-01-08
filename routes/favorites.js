@@ -15,7 +15,7 @@ router.post("/favorites/create", isAuthenticated, async (req, res) => {
   console.log(req.user);
   console.log(req.fields.game.data.name);
   const favoriteExists = await Favorite.findOne({
-    username: req.user.account.username,
+    username: req.user.username,
     name: req.fields.name,
   });
   const user = await User.findById(req.user._id);
@@ -24,7 +24,7 @@ router.post("/favorites/create", isAuthenticated, async (req, res) => {
   if (favoriteExists === null) {
     try {
       const newFavorite = new Favorite({
-        username: req.user.account.username,
+        username: req.user.username,
         game: req.fields.game,
         img: req.fields.img,
         name: req.fields.name,
@@ -45,11 +45,11 @@ router.post("/favorites/create", isAuthenticated, async (req, res) => {
 
 //read;
 
-router.get("/favorites", async (req, res) => {
-  console.log("SignUp road");
+router.get("/favorites", isAuthenticated, async (req, res) => {
+  console.log("read fav");
   try {
-    const students = await Favorite.find({ userId: req.query.userId });
-    res.send(students);
+    const favorites = await Favorite.find({ username: req.user.username });
+    res.send(favorites);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
