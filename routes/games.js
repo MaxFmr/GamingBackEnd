@@ -7,6 +7,7 @@ const apiKey = process.env.API_KEY;
 //route Jeux avec requête axios vers api (page d'accueil du front)
 
 router.get("/games", async (req, res) => {
+  console.log(req.query.ordering);
   const platforms = req.query.platforms;
   if (platforms) {
     console.log("1");
@@ -27,7 +28,7 @@ router.get("/games", async (req, res) => {
     try {
       await axios
         .get(
-          `https://api.rawg.io/api/games?key=${apiKey}&page=${req.query.page}`
+          `https://api.rawg.io/api/games?key=${apiKey}&page=${req.query.page}&search=${req.query.search}&dates=${req.query.dates}&page_size=${req.query.page_size}&ordering=${req.query.ordering}`
         )
         .then((response) => {
           console.log("route games");
