@@ -26,7 +26,9 @@ router.get("/games", async (req, res) => {
     console.log("2");
     try {
       await axios
-        .get(`https://api.rawg.io/api/games?key=${apiKey}`)
+        .get(
+          `https://api.rawg.io/api/games?key=${apiKey}&page=${req.query.page}`
+        )
         .then((response) => {
           console.log("route games");
           res.send(response.data);
