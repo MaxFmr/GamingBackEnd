@@ -9,9 +9,8 @@ const User = mongoose.model("User", {
   username: {
     required: true,
     type: String,
-
-    avatar: Object,
   },
+  avatar: { type: Object },
   reviews: {
     type: Array,
   },

@@ -11,7 +11,7 @@ const User = require("../models/modelUser");
 
 router.post("/review/create", isAuthenticated, async (req, res) => {
   const reviewExists = await Review.findOne({
-    userName: req.user.account.username,
+    userName: req.user.username,
     gameId: req.fields.gameId,
   });
   const user = await User.findById(req.user._id);
@@ -20,13 +20,14 @@ router.post("/review/create", isAuthenticated, async (req, res) => {
   if (reviewExists === null) {
     try {
       const newReview = new Review({
-        userName: req.user.account.username,
-        email: req.user.email,
+        userName: user.username,
+        email: user.email,
         review: req.fields.review,
         note: req.fields.note,
-        userAvatar: req.user.account.avatar.secure_url,
+        userAvatar: user.avatar.secure_url,
         gameId: req.fields.gameId,
       });
+      console.log("1");
       await user.reviews.push(newReview);
       await newReview.save();
 
