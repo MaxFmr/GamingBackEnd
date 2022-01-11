@@ -18,6 +18,7 @@ cloudinary.config({
 //Route Sign UP
 
 const User = require("../models/modelUser");
+const isAuthenticated = require("../middlewares/isAuthenticated");
 
 router.post("/signup", async (req, res) => {
   console.log("SignUp road");
@@ -97,11 +98,11 @@ router.post("/login", async (req, res) => {
 });
 
 //rechercher un user
-router.post("/consult", async (req, res) => {
+router.post("/consult", isAuthenticated, async (req, res) => {
   console.log("consultroad");
+  console.log(req.user);
   try {
-    console.log(req.fields.id);
-    const profil = await User.find({ _id: req.fields.id });
+    const profil = await User.find({ _id: req.user._id });
     res.send(profil);
     console.log(profil);
   } catch (error) {

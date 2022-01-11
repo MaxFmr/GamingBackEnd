@@ -6,6 +6,7 @@ const formidableMiddleware = require("express-formidable");
 const Review = require("../models/modelReview");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const User = require("../models/modelUser");
+const { urlencoded } = require("express");
 
 //create
 
@@ -20,11 +21,11 @@ router.post("/review/create", isAuthenticated, async (req, res) => {
   if (reviewExists === null) {
     try {
       const newReview = new Review({
-        userName: user.username,
-        email: user.email,
+        userName: req.user.username,
+        email: req.user.email,
         review: req.fields.review,
         note: req.fields.note,
-        userAvatar: user.avatar.secure_url,
+        userAvatar: req.user.avatar.secure_url,
         gameId: req.fields.gameId,
       });
       console.log("1");
