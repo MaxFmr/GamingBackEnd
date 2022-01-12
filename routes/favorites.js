@@ -20,6 +20,12 @@ router.post("/favorites/create", isAuthenticated, async (req, res) => {
   });
   const user = await User.findById(req.user._id);
 
+  //ajourd'hui définition de la date
+  const date = new Date();
+  const nowDate = date.toISOString().split("T")[0];
+
+  //_______
+
   console.log(favoriteExists);
   if (favoriteExists === null) {
     try {
@@ -29,7 +35,7 @@ router.post("/favorites/create", isAuthenticated, async (req, res) => {
         img: req.fields.img,
         name: req.fields.name,
       });
-      await user.favorites.push(newFavorite);
+      await user.favorites.push({ name: newFavorite.name, date: nowDate }); //construction d'un historique des favoris par user
       await user.save();
       await newFavorite.save();
       res.json({ message: "Favorite created" });
@@ -63,8 +69,8 @@ router.post("/favorites/delete", async (req, res) => {
     if (req.fields.game_id) {
       // si l'id a bien été transmis
       // On recherche le "student" à modifier à partir de son id et on le supprime :
-      const favoritesDeleted = await Favorite.deleteMany({
-        game_id: req.fields.game_id,
+      const favoritesDeleted = await Favorite.deleteOne({
+        _id: req.fields.game_id,
       });
       // On répond au client :
       res.json({ message: "Favorite removed" });
