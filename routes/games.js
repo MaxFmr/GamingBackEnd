@@ -7,31 +7,26 @@ const apiKey = process.env.API_KEY;
 //route Jeux avec requête axios vers api (page d'accueil du front)
 
 router.get("/games", async (req, res) => {
-  console.log(req.query.ordering);
   const platforms = req.query.platforms;
   if (platforms) {
-    console.log("1");
     try {
       await axios
         .get(
           `https://api.rawg.io/api/games?key=${apiKey}&platforms=${platforms}`
         )
         .then((response) => {
-          console.log("route games");
           res.send(response.data);
         });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
   } else {
-    console.log("2");
     try {
       await axios
         .get(
           `https://api.rawg.io/api/games?key=${apiKey}&page=${req.query.page}&search=${req.query.search}&dates=${req.query.dates}&page_size=${req.query.page_size}&ordering=${req.query.ordering}`
         )
         .then((response) => {
-          console.log("route games");
           res.send(response.data);
         });
     } catch (error) {
@@ -47,7 +42,6 @@ router.get("/game/:id", async (req, res) => {
     await axios
       .get(`https://api.rawg.io/api/games/${req.params.id}?key=${apiKey}`)
       .then((response) => {
-        console.log("route game/id");
         res.send(response.data);
       });
   } catch (error) {
@@ -66,7 +60,6 @@ router.get("/games/:id/game-series", async (req, res) => {
         `https://api.rawg.io/api/games/${req.params.id}/game-series?key=${apiKey}`
       )
       .then((response) => {
-        console.log("route game series");
         res.send(response.data);
       });
   } catch (error) {
@@ -83,7 +76,6 @@ router.get("/games/:id/movies", async (req, res) => {
         `https://api.rawg.io/api/games/${req.params.id}/movies?key=${apiKey}`
       )
       .then((response) => {
-        console.log("route game movies");
         res.send(response.data);
       });
   } catch (error) {
