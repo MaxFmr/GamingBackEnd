@@ -11,9 +11,7 @@ router.use(formidableMiddleware());
 //create
 
 router.post("/favorites/create", isAuthenticated, async (req, res) => {
-  console.log("create favorite");
-  console.log(req.user);
-  console.log(req.fields.game.data.name);
+
   const favoriteExists = await Favorite.findOne({
     username: req.user.username,
     name: req.fields.name,
@@ -26,7 +24,6 @@ router.post("/favorites/create", isAuthenticated, async (req, res) => {
 
   //_______
 
-  console.log(favoriteExists);
   if (favoriteExists === null) {
     try {
       const newFavorite = new Favorite({
@@ -52,7 +49,6 @@ router.post("/favorites/create", isAuthenticated, async (req, res) => {
 //read;
 
 router.get("/favorites", isAuthenticated, async (req, res) => {
-  console.log("read fav");
   try {
     const favorites = await Favorite.find({ username: req.user.username });
     res.send(favorites);
@@ -63,9 +59,7 @@ router.get("/favorites", isAuthenticated, async (req, res) => {
 
 // **Delete**
 router.post("/favorites/delete", async (req, res) => {
-  console.log("delete");
   try {
-    console.log(req.fields.game_id);
     if (req.fields.game_id) {
       // si l'id a bien été transmis
       // On recherche le "student" à modifier à partir de son id et on le supprime :
