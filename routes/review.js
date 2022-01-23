@@ -16,7 +16,6 @@ router.post("/review/create", isAuthenticated, async (req, res) => {
     gameId: req.fields.gameId,
   });
   const user = await User.findById(req.user._id);
-  console.log(user);
 
   if (reviewExists === null) {
     try {
@@ -75,12 +74,9 @@ router.post("/review/update", async (req, res) => {
 });
 // **Like**
 router.post("/review/like", isAuthenticated, async (req, res) => {
-  console.log("route : review /like");
   const review = await Review.findById(req.fields._id);
-  console.log(review);
 
   const likeExist = review.likes.indexOf(req.user.username);
-  console.log(req.user);
   try {
     if (likeExist === -1) {
       review.likes.push(req.user.username);
@@ -100,7 +96,6 @@ router.post("/review/like", isAuthenticated, async (req, res) => {
 
 // **disLike**
 router.post("/review/dislike", isAuthenticated, async (req, res) => {
-  console.log("route : review /dislike");
   const review = await Review.findById(req.fields._id);
 
   const dislikeExist = review.dislikes.indexOf(req.user.username);
@@ -122,7 +117,6 @@ router.post("/review/dislike", isAuthenticated, async (req, res) => {
 });
 // **Delete**
 router.post("/review/delete", async (req, res) => {
-  console.log("delete review");
   try {
     await Review.findByIdAndDelete(req.fields._id);
 
