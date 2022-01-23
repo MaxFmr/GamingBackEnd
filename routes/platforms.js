@@ -9,7 +9,6 @@ router.get("/platforms", async (req, res) => {
     await axios
       .get(`https://api.rawg.io/api/platforms?key=${apiKey}`)
       .then((response) => {
-        console.log("route platforms");
         res.send(response.data);
       });
   } catch (error) {
