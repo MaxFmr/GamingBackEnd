@@ -21,7 +21,6 @@ const User = require("../models/modelUser");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 
 router.post("/signup", async (req, res) => {
-  console.log("SignUp road");
   const userExists = await User.findOne({
     email: req.fields.email,
   });
@@ -71,7 +70,6 @@ router.post("/signup", async (req, res) => {
 //route login
 
 router.post("/login", async (req, res) => {
-  console.log("login road");
   try {
     const user = await User.findOne({ email: req.fields.email });
     if (user === null) {
@@ -99,7 +97,6 @@ router.post("/login", async (req, res) => {
 
 //rechercher un user
 router.post("/consult", isAuthenticated, async (req, res) => {
-  console.log("consultroad");
   console.log(req.user);
   try {
     const profil = await User.find({ _id: req.user._id });
